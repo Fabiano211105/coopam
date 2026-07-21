@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="imagens/favicon.png" />
+    <title>COOPAM</title>
+
+    <!-- Google Fonts: Fraunces (organic serif, display) + Karla (soft humanist sans, body) + Space Mono (used sparingly, for data only) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Karla:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["'Karla'", "sans-serif"],
+              display: ["'Fraunces'", "serif"],
+              mono: ["'Space Mono'", "monospace"],
+            },
+            colors: {
+              /* Earthy, mineral-inspired palette: soil, moss, clay, limestone */
+              brand: {
+                50: "#f6f3e9",
+                100: "#eae2c9",
+                200: "#d3c69a",
+                300: "#aea877",
+                400: "#82855a",
+                500: "#586b43",
+                600: "#425433",
+                700: "#334026",
+                800: "#232c19",
+                900: "#161c10",
+              },
+              clay: {
+                300: "#dba97d",
+                400: "#c4835a",
+                500: "#a2603c",
+                600: "#824b2f",
+              },
+              paper: {
+                DEFAULT: "#f7f2e6",
+                deep: "#efe6d2",
+              }
+            },
+            borderRadius: {
+              organic: "42% 58% 61% 39% / 47% 44% 56% 53%",
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      body {
+        font-family: 'Karla', sans-serif;
+        background-color: #f7f2e6;
+        color: #1e2415;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* Paper grain texture overlay — gives an analog, non-templated feel */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        pointer-events: none;
+        opacity: 0.05;
+        mix-blend-mode: multiply;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #f6f3e9; }
+      ::-webkit-scrollbar-thumb { background: #d3c69a; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #aea877; }
+
+      .fade-enter {
+        animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Signature asymmetric radii — used sparingly on key elements, referencing eroded stone */
+      .knot-tl { border-radius: 38px 14px 38px 14px; }
+      .knot-tr { border-radius: 14px 38px 14px 38px; }
+      .knot-soft { border-radius: 28px 12px 28px 46px; }
+
+      .eyebrow {
+        font-family: 'Fraunces', serif;
+        font-style: italic;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+      }
+
+      .warm-shadow {
+        box-shadow: 0 18px 40px -20px rgba(30, 25, 10, 0.28);
+      }
+    </style>
+  </head>
+  <body class="selection:bg-brand-200 selection:text-brand-900">
+
+<!-- HEADER NAVBAR -->
+<header id="navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-300 py-6">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between">
+
+    <!-- Logo COOPAM -->
+    <div class="flex items-center">
+      <img src="imagens/logo.png" alt="Logo COOPAM" class="h-14 w-auto object-contain" />
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:flex items-center space-x-1">
+      <a href="#inicio" class="px-4 py-2 text-sm text-brand-600 hover:text-brand-900 transition-colors">Início</a>
+      <a href="#sobre" class="px-4 py-2 text-sm text-brand-600 hover:text-brand-900 transition-colors">Sobre nós</a>
+      <a href="#logistica" class="px-4 py-2 text-sm text-brand-600 hover:text-brand-900 transition-colors">Logística reversa</a>
+      <a href="#equipamentos" class="px-4 py-2 text-sm text-brand-600 hover:text-brand-900 transition-colors">Equipamentos</a>
+      <a href="#parceiros" class="px-4 py-2 text-sm text-brand-600 hover:text-brand-900 transition-colors">Parceiros</a>
+      <a href="#contato" class="px-4 py-2 text-sm text-brand-600 hover:text-brand-900 transition-colors">Contato</a>
+    </nav>
+
+    <!-- Botão hambúrguer (mobile/tablet) -->
+    <button id="menu-toggle" class="md:hidden flex items-center justify-center w-11 h-11 knot-tl bg-brand-600 text-paper" aria-label="Abrir menu" aria-expanded="false">
+      <i data-lucide="menu" id="menu-icon-open" class="w-5 h-5"></i>
+      <i data-lucide="x" id="menu-icon-close" class="w-5 h-5 hidden"></i>
+    </button>
+
+  </div>
+
+  <!-- Painel mobile -->
+  <div id="mobile-menu" class="md:hidden hidden flex-col bg-paper/98 backdrop-blur-md border-t border-brand-200 mt-6">
+    <nav class="flex flex-col px-6 py-4 space-y-1">
+      <a href="#inicio" class="mobile-nav-link px-4 py-3 text-sm text-brand-700 hover:text-brand-900 hover:bg-brand-50 rounded-lg transition-colors">Início</a>
+      <a href="#sobre" class="mobile-nav-link px-4 py-3 text-sm text-brand-700 hover:text-brand-900 hover:bg-brand-50 rounded-lg transition-colors">Sobre nós</a>
+      <a href="#logistica" class="mobile-nav-link px-4 py-3 text-sm text-brand-700 hover:text-brand-900 hover:bg-brand-50 rounded-lg transition-colors">Logística reversa</a>
+      <a href="#equipamentos" class="mobile-nav-link px-4 py-3 text-sm text-brand-700 hover:text-brand-900 hover:bg-brand-50 rounded-lg transition-colors">Equipamentos</a>
+      <a href="#parceiros" class="mobile-nav-link px-4 py-3 text-sm text-brand-700 hover:text-brand-900 hover:bg-brand-50 rounded-lg transition-colors">Parceiros</a>
+      <a href="#contato" class="mobile-nav-link px-4 py-3 text-sm text-brand-700 hover:text-brand-900 hover:bg-brand-50 rounded-lg transition-colors">Contato</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO SECTION -->
+<section id="inicio" class="relative pt-32 pb-16 md:pt-44 md:pb-24 lg:pt-52 lg:pb-32 overflow-hidden min-h-[70vh] md:min-h-[80vh] lg:min-h-[90vh] flex items-center">
+
+  <div
+    class="absolute inset-0 z-0 bg-cover bg-center sepia-[0.15]"
+    style="background-image: url('imagens/hero.png'); background-attachment: fixed;"
+  ></div>
+
+  <div class="absolute inset-0 z-[1] backdrop-blur-[3px] bg-gradient-to-b from-paper/70 via-transparent to-paper/70"></div>
+  <div class="absolute inset-0 z-[1] bg-gradient-to-r from-paper via-paper/70 to-paper/30 lg:to-transparent"></div>
+
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+
+      <div class="lg:col-span-7 text-center lg:text-left">
+
+        <div class="inline-flex items-center justify-center lg:justify-start space-x-2 mb-6">
+          <span class="w-1.5 h-1.5 rounded-full bg-clay-500"></span>
+          <span class="eyebrow text-sm sm:text-base text-brand-500">Cooperativa Ambiental do Rio de Janeiro</span>
+        </div>
+
+        <h1 class="font-display font-medium text-4xl sm:text-5xl md:text-6xl lg:text-[4.2rem] tracking-tight text-brand-900 leading-[1.1] lg:leading-[1.05] mb-6">
+          O entulho vira <span class="italic text-clay-500 font-normal">terra fértil</span> para construir de novo.
+        </h1>
+
+        <p class="font-sans text-base sm:text-lg lg:text-xl text-brand-700 leading-relaxed mb-8 lg:mb-10 max-w-xl mx-auto lg:mx-0">
+          Transformamos o que sobra da obra em matéria-prima limpa. Triagem, trituração e destinação ética dos resíduos da construção civil, camada por camada.
+        </p>
+
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+    <!-- ABOUT US SECTION -->
+    <section id="sobre" class="py-24 border-t border-brand-200/60">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+          <div class="lg:col-span-5">
+            <span class="eyebrow text-sm text-clay-500 block mb-3">Conheça a coopam</span>
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-brand-900 leading-tight">
+              Compromisso real com a regeneração na construção civil.
+            </h2>
+          </div>
+
+          <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8 font-sans text-brand-700 text-sm sm:text-base leading-relaxed">
+            <div class="space-y-4">
+              <p>
+                A <strong class="text-brand-900">COOPAM — Cooperativa pela Purificação Ambiental</strong> é uma união consolidada de trabalhadores da categoria de caçambeiros, fundada com a diretriz ética de estruturar a reciclagem de <strong class="text-brand-900">Resíduos da Construção Civil (RCC)</strong> no Rio de Janeiro.
+              </p>
+              <p>
+                Atuamos como uma central especializada de reciclagem e triagem, devolvendo à indústria materiais purificados e seguros. Isso resulta na redução drástica de descartes ilegais em encostas e vias públicas do estado.
+              </p>
+            </div>
+            <div class="space-y-4">
+              <p>
+                O processo consiste na trituração refinada de concretos, tijolos, lajes e entulhos minerais. O material resultante é classificado em diferentes bitolas de agregados limpos, reduzindo a pegada de carbono e o esgotamento de pedreiras naturais.
+              </p>
+              <p>
+                Unimos conformidade técnica, geração de renda digna para cooperados locais e a verdadeira economia circular de ponta a ponta na cadeia da engenharia civil.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Value statements: staggered, organic radii instead of a uniform grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16 pt-12 border-t border-brand-200/60">
+          <div class="p-6 bg-paper-deep knot-soft border border-brand-200/50 hover:-translate-y-1 transition-transform duration-300">
+            <span class="font-display italic font-semibold text-brand-900 block mb-2 text-lg">Preservação ambiental</span>
+            <p class="text-sm text-brand-600 leading-relaxed">Reaproveitamento de minerais para proteger leitos de rios e encostas.</p>
+          </div>
+          <div class="p-6 bg-paper-deep knot-soft border border-brand-200/50 hover:-translate-y-1 transition-transform duration-300 sm:mt-6">
+            <span class="font-display italic font-semibold text-brand-900 block mb-2 text-lg">Geração de renda</span>
+            <p class="text-sm text-brand-600 leading-relaxed">Trabalho digno, justa distribuição e empoderamento profissional dos cooperados.</p>
+          </div>
+          <div class="p-6 bg-paper-deep knot-soft border border-brand-200/50 hover:-translate-y-1 transition-transform duration-300">
+            <span class="font-display italic font-semibold text-brand-900 block mb-2 text-lg">Qualidade certificada</span>
+            <p class="text-sm text-brand-600 leading-relaxed">Britas e pedriscos produzidos sob estritas especificações técnicas vigentes.</p>
+          </div>
+          <div class="p-6 bg-paper-deep knot-soft border border-brand-200/50 hover:-translate-y-1 transition-transform duration-300 sm:mt-6">
+            <span class="font-display italic font-semibold text-brand-900 block mb-2 text-lg">Consciência coletiva</span>
+            <p class="text-sm text-brand-600 leading-relaxed">Educação e conscientização para zerar o descarte desordenado na construção.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- LOGÍSTICA REVERSA CYCLE -->
+    <section id="logistica" class="py-24 bg-paper-deep border-y border-brand-200/60">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div class="max-w-3xl mb-12">
+          <span class="eyebrow text-sm text-clay-500 block mb-3">O percurso do material</span>
+          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-brand-900">
+            O ciclo da logística reversa
+          </h2>
+          <p class="font-sans text-brand-600 text-sm sm:text-base mt-2 leading-relaxed">
+            Sete camadas, do entulho bruto ao material que volta para a obra. Explore cada etapa abaixo.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+          <!-- Main Interactive Slide Card -->
+          <div class="lg:col-span-8">
+            <div class="bg-paper knot-tl border border-brand-200/70 warm-shadow overflow-hidden relative">
+
+              <div class="w-full bg-brand-100 h-1.5 relative">
+                <div id="progress-bar" class="absolute top-0 left-0 bg-clay-500 h-full transition-all duration-300" style="width: 14.28%;"></div>
+              </div>
+
+              <div class="p-8 sm:p-12">
+
+                <div class="flex items-center justify-between mb-8">
+                  <span id="step-counter" class="font-mono text-xs font-bold text-brand-400">
+                    01 / 07
+                  </span>
+                  <span id="step-badge" class="px-3 py-1 bg-brand-50 border border-brand-200 rounded-full text-[11px] text-brand-600 font-semibold">
+                    Início do fluxo
+                  </span>
+                </div>
+
+                <div id="slide-content" class="min-h-[220px] flex flex-col justify-between fade-enter">
+                  <div>
+                    <div class="mb-6 inline-flex p-4 bg-brand-100 knot-tr text-brand-600">
+                      <i id="step-icon" data-lucide="hammer" class="w-8 h-8"></i>
+                    </div>
+
+                    <h3 id="step-title" class="font-display text-2xl sm:text-3xl font-medium text-brand-900 mb-4">
+                      Gerador de Resíduos
+                    </h3>
+
+                    <p id="step-text" class="font-sans text-brand-600 text-sm sm:text-base leading-relaxed max-w-2xl">
+                      Obras, demolições ou reformas geram entulhos no Rio de Janeiro. Construtoras e cidadãos atuam como agentes iniciais essenciais para separar resíduos em sua própria fonte.
+                    </p>
+                  </div>
+
+                  <div class="mt-6 p-4 bg-brand-50 knot-soft flex items-center space-x-3 border border-brand-200/40">
+                    <span class="w-2 h-2 rounded-full bg-clay-500"></span>
+                    <p class="text-xs sm:text-sm text-brand-700">
+                      <span class="text-clay-500 font-semibold">Destaque:</span> <span id="step-highlight">Evita descarte irregular em encostas and rios.</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-8 mt-8 border-t border-brand-200/60">
+
+                  <button
+                    id="btn-prev"
+                    class="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full border border-brand-300 text-xs font-semibold text-brand-700 hover:bg-brand-50 transition-all cursor-pointer"
+                  >
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    <span>Voltar</span>
+                  </button>
+
+                  <div class="hidden sm:flex items-center space-x-1.5" id="dot-indicators"></div>
+
+                  <button
+                    id="btn-next"
+                    class="inline-flex items-center space-x-2 px-6 py-2.5 rounded-full bg-brand-900 hover:bg-brand-700 text-paper text-xs font-semibold transition-all cursor-pointer"
+                  >
+                    <span>Próximo passo</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                  </button>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+<!-- Sidebar quick selector -->
+<div class="hidden lg:block lg:col-span-4 bg-paper knot-tr border border-brand-200/70 p-6 warm-shadow">
+  <h4 class="font-display italic font-semibold text-brand-900 text-base mb-4">
+    As sete camadas
+  </h4>
+  <div class="space-y-1" id="sidebar-list"></div>
+</div>
+
+        </div>
+
+      </div>
+    </section>
+
+<!-- EQUIPAMENTOS DE OPERAÇÃO -->
+<section id="equipamentos" class="py-24">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+    <div class="max-w-3xl mb-16">
+      <span class="eyebrow text-sm text-clay-500 block mb-3">Estrutura operacional</span>
+      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-brand-900">
+        Equipamentos de operação
+      </h2>
+      <p class="font-sans text-brand-600 text-sm sm:text-base mt-2 leading-relaxed">
+        Dispomos de maquinários industriais de alta performance para garantir a purificação, trituração e manuseio adequado de resíduos da construção civil.
+      </p>
+    </div>
+
+    <div class="relative">
+
+      <button id="equip-prev" class="lg:hidden absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 z-20 w-10 h-10 rounded-full bg-paper warm-shadow border border-brand-200 flex items-center justify-center text-brand-700 hover:bg-brand-50 transition-colors">
+        <i data-lucide="chevron-left" class="w-5 h-5"></i>
+      </button>
+      <button id="equip-next" class="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 z-20 w-10 h-10 rounded-full bg-paper warm-shadow border border-brand-200 flex items-center justify-center text-brand-700 hover:bg-brand-50 transition-colors">
+        <i data-lucide="chevron-right" class="w-5 h-5"></i>
+      </button>
+
+      <div id="equip-scroll" class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-4 -mx-6 px-6 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] lg:grid lg:grid-cols-3 xl:grid-cols-4 lg:overflow-visible lg:mx-0 lg:px-0 lg:pb-0 lg:snap-none">
+
+        <div class="flex-none w-[80%] sm:w-[45%] lg:w-auto snap-center bg-paper rounded-2xl border border-brand-200/70 overflow-hidden warm-shadow flex flex-col justify-between hover:-translate-y-1 transition-all duration-300">
+          <div>
+            <div class="aspect-[4/3] bg-brand-100 relative overflow-hidden">
+              <img src="imagens/pa-carregadeira.png" alt="Pá Carregadeira" class="w-full h-full object-cover sepia-[0.15]" referrerPolicy="no-referrer"/>
+              <span class="absolute top-3 left-3 bg-paper/95 backdrop-blur-sm text-[10px] font-semibold text-brand-800 px-2.5 py-1 rounded-full border border-brand-200">Movimentação</span>
+            </div>
+            <div class="p-5">
+              <h4 class="font-display font-semibold text-brand-900 text-lg mb-1">Pá Carregadeira</h4>
+              <p class="font-sans text-sm text-brand-600 leading-relaxed">Essencial para a movimentação ágil e carregamento de agregados minerais no pátio de triagem.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-none w-[80%] sm:w-[45%] lg:w-auto snap-center bg-paper rounded-2xl border border-brand-200/70 overflow-hidden warm-shadow flex flex-col justify-between hover:-translate-y-1 transition-all duration-300">
+          <div>
+            <div class="aspect-[4/3] bg-brand-100 relative overflow-hidden">
+              <img src="imagens/retroescavadeira.png" alt="Retroescavadeira" class="w-full h-full object-cover sepia-[0.15]" referrerPolicy="no-referrer"/>
+              <span class="absolute top-3 left-3 bg-paper/95 backdrop-blur-sm text-[10px] font-semibold text-brand-800 px-2.5 py-1 rounded-full border border-brand-200">Suporte</span>
+            </div>
+            <div class="p-5">
+              <h4 class="font-display font-semibold text-brand-900 text-lg mb-1">Retroescavadeira</h4>
+              <p class="font-sans text-sm text-brand-600 leading-relaxed">Equipamento multifuncional utilizado na organização preliminar dos pátios e escavações de apoio.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-none w-[80%] sm:w-[45%] lg:w-auto snap-center bg-paper rounded-2xl border border-brand-200/70 overflow-hidden warm-shadow flex flex-col justify-between hover:-translate-y-1 transition-all duration-300">
+          <div>
+            <div class="aspect-[4/3] bg-brand-100 relative overflow-hidden">
+              <img src="imagens/triturador-de-rcc.png" alt="Triturador de RCC" class="w-full h-full object-cover sepia-[0.15]" referrerPolicy="no-referrer"/>
+              <span class="absolute top-3 left-3 bg-paper/95 backdrop-blur-sm text-[10px] font-semibold text-brand-800 px-2.5 py-1 rounded-full border border-brand-200">Industrial</span>
+            </div>
+            <div class="p-5">
+              <h4 class="font-display font-semibold text-brand-900 text-lg mb-1">Triturador de RCC</h4>
+              <p class="font-sans text-sm text-brand-600 leading-relaxed">Britador de alto porte que converte pedras, concretos e tijolos descartados em britas e pedriscos reciclados.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-none w-[80%] sm:w-[45%] lg:w-auto snap-center bg-paper rounded-2xl border border-brand-200/70 overflow-hidden warm-shadow flex flex-col justify-between hover:-translate-y-1 transition-all duration-300">
+          <div>
+            <div class="aspect-[4/3] bg-brand-100 relative overflow-hidden">
+              <img src="imagens/triturador-de-madeira.png" alt="Triturador de Madeira" class="w-full h-full object-cover sepia-[0.15]" referrerPolicy="no-referrer"/>
+              <span class="absolute top-3 left-3 bg-paper/95 backdrop-blur-sm text-[10px] font-semibold text-brand-800 px-2.5 py-1 rounded-full border border-brand-200">Biomassa</span>
+            </div>
+            <div class="p-5">
+              <h4 class="font-display font-semibold text-brand-900 text-lg mb-1">Triturador de Madeira</h4>
+              <p class="font-sans text-sm text-brand-600 leading-relaxed">Garante o reaproveitamento completo de pallets e madeiras de obras, transformando-os em biomassa útil.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-none w-[80%] sm:w-[45%] lg:w-auto snap-center bg-paper rounded-2xl border border-brand-200/70 overflow-hidden warm-shadow flex flex-col justify-between hover:-translate-y-1 transition-all duration-300">
+          <div>
+            <div class="aspect-[4/3] bg-brand-100 relative overflow-hidden">
+              <img src="imagens/transporte.png" alt="Cooperado Transportador" class="w-full h-full object-cover sepia-[0.15]" referrerPolicy="no-referrer"/>
+              <span class="absolute top-3 left-3 bg-paper/95 backdrop-blur-sm text-[10px] font-semibold text-brand-800 px-2.5 py-1 rounded-full border border-brand-200">Logística</span>
+            </div>
+            <div class="p-5">
+              <h4 class="font-display font-semibold text-brand-900 text-lg mb-1">Cooperado Transportador</h4>
+              <p class="font-sans text-sm text-brand-600 leading-relaxed">Caminhão coletor que realiza a logística reversa direta, transportando as caçambas com segurança.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-none w-[80%] sm:w-[45%] lg:w-auto snap-center bg-paper rounded-2xl border border-brand-200/70 overflow-hidden warm-shadow flex flex-col justify-between hover:-translate-y-1 transition-all duration-300">
+          <div>
+            <div class="aspect-[4/3] bg-brand-100 relative overflow-hidden">
+              <img src="imagens/escavadeira-hidraulica.png" alt="Escavadeira Hidráulica" class="w-full h-full object-cover sepia-[0.15]" referrerPolicy="no-referrer"/>
+              <span class="absolute top-3 left-3 bg-paper/95 backdrop-blur-sm text-[10px] font-semibold text-brand-800 px-2.5 py-1 rounded-full border border-brand-200">Escavação</span>
+            </div>
+            <div class="p-5">
+              <h4 class="font-display font-semibold text-brand-900 text-lg mb-1">Escavadeira Hidráulica</h4>
+              <p class="font-sans text-sm text-brand-600 leading-relaxed">Maquinário de alta potência ideal para alimentar o britador com blocos pesados de concreto armado.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-none w-[80%] sm:w-[45%] lg:w-auto snap-center bg-paper rounded-2xl border border-brand-200/70 overflow-hidden warm-shadow flex flex-col justify-between hover:-translate-y-1 transition-all duration-300">
+          <div>
+            <div class="aspect-[4/3] bg-brand-100 relative overflow-hidden">
+              <img src="imagens/prod-blocos.png" alt="Máquina de Prod. de Blocos" class="w-full h-full object-cover sepia-[0.15]" referrerPolicy="no-referrer"/>
+              <span class="absolute top-3 left-3 bg-paper/95 backdrop-blur-sm text-[10px] font-semibold text-brand-800 px-2.5 py-1 rounded-full border border-brand-200">Manufatura</span>
+            </div>
+            <div class="p-5">
+              <h4 class="font-display font-semibold text-brand-900 text-lg mb-1">Máquina de Prod. de Blocos</h4>
+              <p class="font-sans text-sm text-brand-600 leading-relaxed">Prensa de alta eficiência que modela blocos e pisos ecológicos utilizando o agregado reciclado da cooperativa.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-none w-[80%] sm:w-[45%] lg:w-auto snap-center bg-paper rounded-2xl border border-brand-200/70 overflow-hidden warm-shadow flex flex-col justify-between hover:-translate-y-1 transition-all duration-300">
+          <div>
+            <div class="aspect-[4/3] bg-brand-100 relative overflow-hidden">
+              <img src="imagens/cacamba.png" alt="Caçamba para Reciclagem RCC" class="w-full h-full object-cover sepia-[0.15]" referrerPolicy="no-referrer"/>
+              <span class="absolute top-3 left-3 bg-paper/95 backdrop-blur-sm text-[10px] font-semibold text-brand-800 px-2.5 py-1 rounded-full border border-brand-200">Coleta</span>
+            </div>
+            <div class="p-5">
+              <h4 class="font-display font-semibold text-brand-900 text-lg mb-1">Caçamba para Reciclagem RCC</h4>
+              <p class="font-sans text-sm text-brand-600 leading-relaxed">Caçambas estacionárias padronizadas para o descarte limpo e triado na própria fonte geradora.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+    <!-- PARCEIROS SECTION -->
+    <section id="parceiros" class="py-24 bg-paper-deep border-t border-brand-200/60">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div class="max-w-3xl mb-16">
+          <span class="eyebrow text-sm text-clay-500 block mb-3">Conexões estratégicas</span>
+          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-brand-900">
+            Nossos parceiros
+          </h2>
+          <p class="font-sans text-brand-600 text-sm sm:text-base mt-2 leading-relaxed">
+            Valorizamos conexões com órgãos públicos, federações e empresas de tecnologia que compartilham do compromisso com a sustentabilidade e regulação ambiental.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          <div class="bg-paper rounded-2xl border border-brand-200/70 overflow-hidden warm-shadow flex flex-col h-full hover:-translate-y-1 transition-all duration-300">
+            <div class="aspect-[16/10] bg-brand-100 relative overflow-hidden">
+              <img src="imagens/febracom.jpg" alt="FEBRACOM" class="w-full h-full object-cover sepia-[0.15]" referrerPolicy="no-referrer"/>
+              <span class="absolute bottom-3 left-3 bg-brand-900/90 text-paper text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-sm">FEBRACOM</span>
+            </div>
+            <div class="p-5 flex-grow flex flex-col justify-between">
+              <div>
+                <span class="text-[11px] font-semibold text-clay-500 block mb-1.5">Federação das Cooperativas</span>
+                <p class="font-sans text-sm text-brand-600 leading-relaxed">Rede formalizada e licenciada composta por cooperativas de catadores e recicladores do RJ. Atua em parceria com o governo estadual e prefeituras em capacitação e coleta seletiva.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-paper rounded-2xl border border-brand-200/70 overflow-hidden warm-shadow flex flex-col h-full hover:-translate-y-1 transition-all duration-300">
+            <div class="aspect-[16/10] bg-brand-100 relative overflow-hidden">
+              <img src="imagens/inea.jfif" alt="INEA" class="w-full h-full object-cover sepia-[0.15]" referrerPolicy="no-referrer"/>
+              <span class="absolute bottom-3 left-3 bg-brand-900/90 text-paper text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-sm">INEA</span>
+            </div>
+            <div class="p-5 flex-grow flex flex-col justify-between">
+              <div>
+                <span class="text-[11px] font-semibold text-clay-500 block mb-1.5">Instituto Estadual do Ambiente</span>
+                <p class="font-sans text-sm text-brand-600 leading-relaxed">Órgão ambiental indireto vinculado à Secretaria de Estado do Ambiente e Sustentabilidade, responsável por licenciar, fiscalizar e regular as boas práticas ecológicas.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-paper rounded-2xl border border-brand-200/70 overflow-hidden warm-shadow flex flex-col h-full hover:-translate-y-1 transition-all duration-300">
+            <div class="aspect-[16/10] bg-brand-100 relative overflow-hidden">
+              <img src="imagens/comlurb.jpg" alt="COMLURB" class="w-full h-full object-cover sepia-[0.15]" referrerPolicy="no-referrer"/>
+              <span class="absolute bottom-3 left-3 bg-brand-900/90 text-paper text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-sm">COMLURB</span>
+            </div>
+            <div class="p-5 flex-grow flex flex-col justify-between">
+              <div>
+                <span class="text-[11px] font-semibold text-clay-500 block mb-1.5">Companhia Municipal de Limpeza Urbana</span>
+                <p class="font-sans text-sm text-brand-600 leading-relaxed">A maior organização de limpeza pública da América Latina, responsável pela coleta domiciliar, hospitalar, industrial e destinação correta de detritos no município do RJ.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-paper rounded-2xl border border-brand-200/70 overflow-hidden warm-shadow flex flex-col h-full hover:-translate-y-1 transition-all duration-300">
+            <div class="aspect-[16/10] bg-brand-100 relative overflow-hidden">
+              <img src="imagens/gerar.jpg" alt="GERAR" class="w-full h-full object-cover sepia-[0.15]" referrerPolicy="no-referrer"/>
+              <span class="absolute bottom-3 left-3 bg-brand-900/90 text-paper text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-sm">GERAR</span>
+            </div>
+            <div class="p-5 flex-grow flex flex-col justify-between">
+              <div>
+                <span class="text-[11px] font-semibold text-clay-500 block mb-1.5">Tecnologia Ambiental</span>
+                <p class="font-sans text-sm text-brand-600 leading-relaxed">Empresa brasileira com grande expertise no processamento térmico e desenvolvimento de soluções sustentáveis integradas de mitigação de impactos em meio ambiente.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONTACT & FOOTER -->
+    <section id="contato" class="py-24 border-t border-brand-200/60">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+        <div class="bg-brand-900 text-paper knot-tl p-8 md:p-16 relative overflow-hidden">
+
+          <svg class="absolute -right-16 -bottom-16 w-72 h-72 opacity-[0.12] pointer-events-none" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#c4835a" d="M45,-58.4C58.3,-49.8,68.8,-35.6,72.6,-19.7C76.4,-3.8,73.5,13.9,65.4,28.6C57.3,43.3,44,55,28.8,63.1C13.7,71.2,-3.4,75.6,-19.6,72.1C-35.8,68.6,-51.1,57.2,-61.1,42.6C-71.1,28,-75.8,10.2,-73.5,-6.4C-71.2,-23.1,-61.9,-38.6,-49,-48.3C-36.1,-58,-19.5,-61.9,-2.1,-58.7C15.4,-55.5,31.7,-67,45,-58.4Z" transform="translate(100 100)" />
+          </svg>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10">
+
+            <div class="lg:col-span-6 space-y-6">
+              <h3 class="font-display text-3xl sm:text-5xl font-medium leading-tight">
+                Construa com <br />
+                <span class="text-clay-300 italic font-normal">responsabilidade.</span>
+              </h3>
+              <p class="font-sans text-brand-200 text-sm sm:text-base leading-relaxed max-w-md">
+                Tem alguma dúvida sobre destinação de entulhos de obras, caçambas ou parcerias no Rio de Janeiro? Entre em contato diretamente conosco.
+              </p>
+            </div>
+
+            <div class="lg:col-span-6 flex flex-col justify-center space-y-5 lg:pl-12 border-t lg:border-t-0 lg:border-l border-brand-700 pt-8 lg:pt-0">
+
+              <span class="text-[11px] text-brand-300 block font-semibold mb-1">Canais diretos de atendimento</span>
+
+              <div class="space-y-4">
+
+                <a href="tel:2197043955" class="flex items-center space-x-4 bg-brand-800/40 hover:bg-brand-800/60 hover:translate-x-1 p-4 knot-soft border border-brand-700/40 transition-all group">
+                  <div class="w-10 h-10 bg-clay-500 knot-tr flex items-center justify-center shrink-0">
+                    <i data-lucide="phone" class="w-5 h-5 text-paper"></i>
+                  </div>
+                  <div>
+                    <span class="text-[10px] text-brand-300 block">Telefone / WhatsApp</span>
+                    <span class="text-base font-bold text-paper group-hover:text-brand-100">(21) 97043-9550</span>
+                  </div>
+                </a>
+
+                <a href="mailto:coopam.adm@gmail.com" class="flex items-center space-x-4 bg-brand-800/40 hover:bg-brand-800/60 hover:translate-x-1 p-4 knot-soft border border-brand-700/40 transition-all group">
+                  <div class="w-10 h-10 bg-clay-500 knot-tr flex items-center justify-center shrink-0">
+                    <i data-lucide="mail" class="w-5 h-5 text-paper"></i>
+                  </div>
+                  <div>
+                    <span class="text-[10px] text-brand-300 block">E-mail administrativo</span>
+                    <span class="text-sm font-bold text-paper group-hover:text-brand-100">coopam.adm@gmail.com</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+<!-- Footer -->
+<div class="mt-16 pt-8 border-t border-brand-200/60 flex flex-col sm:flex-row items-center justify-between text-xs text-brand-500 space-y-4 sm:space-y-0">
+  <div class="flex items-center space-x-2">
+    <span class="w-2 h-2 rounded-full bg-clay-500"></span>
+    <span>COOPAM RJ &copy; <span id="current-year"></span> — Todos os direitos reservados.</span>
+  </div>
+  <div class="font-display italic">
+    <span>Desenvolvido por <a href="https://newcodestudio.com.br" target="_blank" rel="noopener noreferrer" class="text-clay-500 hover:text-brand-900 transition-colors not-italic font-semibold">NewCode Studio</a></span>
+  </div>
+</div>
+
+      </div>
+    </section>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+
+      const navbar = document.getElementById('navbar');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 20) {
+          navbar.classList.add('bg-paper/95', 'backdrop-blur-md', 'shadow-sm', 'border-b', 'border-brand-200', 'py-4');
+          navbar.classList.remove('bg-transparent', 'py-6');
+        } else {
+          navbar.classList.remove('bg-paper/95', 'backdrop-blur-md', 'shadow-sm', 'border-b', 'border-brand-200', 'py-4');
+          navbar.classList.add('bg-transparent', 'py-6');
+        }
+      });
+
+      const reverseLogisticsSteps = [
+        { step: "01", title: "Gerador de Resíduos", text: "Obras, demolições ou reformas geram entulhos no Rio de Janeiro. Construtoras e cidadãos atuam como agentes iniciais essenciais para separar resíduos in sua própria fonte.", icon: "hammer", badge: "Início do fluxo", highlight: "Evita descarte irregular em encostas e rios." },
+        { step: "02", title: "Classificação & Triagem", text: "Os resíduos coletados são rigorosamente classificados (Classe A, B, C ou D) conforme regulamentações do CONAMA, garantindo máxima precisão no reaproveitamento.", icon: "layers", badge: "Triagem técnica", highlight: "Garante conformidade com normas ambientais vigentes." },
+        { step: "03", title: "Transporte Coordenado", text: "A frota credenciada da cooperativa organiza o tráfego logístico, coletando e transportando as caçambas de forma ordenada e segura.", icon: "truck", badge: "Logística segura", highlight: "Caminhoneiros cooperados gerando renda sustentável." },
+        { step: "04", title: "Destinação & Certificado", text: "O material é acolhido formalmente pela COOPAM, que emite o Certificado de Destinação Final (CDF) oficial, resguardando juridicamente o gerador da obra.", icon: "file-check", badge: "Garantia legal", highlight: "Segurança jurídica e comprovação fiscal e ambiental." },
+        { step: "05", title: "Reaproveitamento & Britagem", text: "Equipamentos de grande porte trituram o entulho mineral bruto (como vigas de concreto e alvenaria), extraindo impurezas e frações metálicas.", icon: "cpu", badge: "Processamento", highlight: "Transformação mecânica limpa e automatizada." },
+        { step: "06", title: "Agregado Reciclado", text: "O entulho regenerado converte-se em britas ecológicas, pedriscos e areia reciclada de alto nível de fricção e aderência física.", icon: "sparkles", badge: "Nova matéria-prima", highlight: "Substitui agregados naturais vindos de pedreiras." },
+        { step: "07", title: "Retorno à Sociedade", text: "As matérias-primas limpas são reintroduzidas para confecção de blocos e pavimentos ecológicos, selando o ciclo virtuoso da economia circular.", icon: "recycle", badge: "Fechamento do ciclo", highlight: "Menor custo financeiro e 100% de consciência eco." }
+      ];
+
+      let activeStep = 0;
+
+      const progressBar = document.getElementById('progress-bar');
+      const stepCounter = document.getElementById('step-counter');
+      const stepBadge = document.getElementById('step-badge');
+      const slideContent = document.getElementById('slide-content');
+      const stepIcon = document.getElementById('step-icon');
+      const stepTitle = document.getElementById('step-title');
+      const stepText = document.getElementById('step-text');
+      const stepHighlight = document.getElementById('step-highlight');
+      const dotIndicatorsContainer = document.getElementById('dot-indicators');
+      const sidebarListContainer = document.getElementById('sidebar-list');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+
+      function initInteractiveUI() {
+        dotIndicatorsContainer.innerHTML = '';
+        reverseLogisticsSteps.forEach((_, idx) => {
+          const btn = document.createElement('button');
+          btn.className = `w-2 h-2 rounded-full transition-all duration-300 ${idx === activeStep ? 'bg-clay-500 w-6' : 'bg-brand-200 hover:bg-brand-300'}`;
+          btn.addEventListener('click', () => selectStep(idx));
+          dotIndicatorsContainer.appendChild(btn);
+        });
+
+        sidebarListContainer.innerHTML = '';
+        reverseLogisticsSteps.forEach((step, idx) => {
+          const btn = document.createElement('button');
+          btn.className = `w-full text-left p-3 rounded-xl flex items-center space-x-3 transition-all duration-200 ${idx === activeStep ? 'bg-brand-50 border border-brand-200 text-brand-900 font-medium' : 'hover:bg-brand-50/50 text-brand-500'}`;
+          btn.addEventListener('click', () => selectStep(idx));
+
+          btn.innerHTML = `
+            <span class="font-mono text-[10px] w-6 text-center ${idx === activeStep ? 'text-clay-500 font-bold' : 'text-brand-300'}">
+              ${step.step}
+            </span>
+            <div class="shrink-0">
+              <i data-lucide="${step.icon}" class="w-4 h-4 ${idx === activeStep ? 'text-clay-500' : 'text-brand-300'}"></i>
+            </div>
+            <span class="text-xs sm:text-sm truncate">
+              ${step.title}
+            </span>
+          `;
+          sidebarListContainer.appendChild(btn);
+        });
+
+        lucide.createIcons();
+      }
+
+      function updateSlide() {
+        const currentData = reverseLogisticsSteps[activeStep];
+
+        progressBar.style.width = `${((activeStep + 1) / reverseLogisticsSteps.length) * 100}%`;
+
+        stepCounter.textContent = `${currentData.step} / 07`;
+        stepBadge.textContent = currentData.badge;
+
+        slideContent.classList.remove('fade-enter');
+        void slideContent.offsetWidth;
+        slideContent.classList.add('fade-enter');
+
+        stepIcon.setAttribute('data-lucide', currentData.icon);
+        stepTitle.textContent = currentData.title;
+        stepText.textContent = currentData.text;
+        stepHighlight.textContent = currentData.highlight;
+
+        Array.from(dotIndicatorsContainer.children).forEach((dot, idx) => {
+          dot.className = idx === activeStep
+            ? 'w-2 h-2 rounded-full transition-all duration-300 bg-clay-500 w-6'
+            : 'w-2 h-2 rounded-full transition-all duration-300 bg-brand-200 hover:bg-brand-300';
+        });
+
+        Array.from(sidebarListContainer.children).forEach((btn, idx) => {
+          const stepData = reverseLogisticsSteps[idx];
+          if (idx === activeStep) {
+            btn.className = 'w-full text-left p-3 rounded-xl flex items-center space-x-3 transition-all duration-200 bg-brand-50 border border-brand-200 text-brand-900 font-medium';
+            btn.innerHTML = `
+              <span class="font-mono text-[10px] w-6 text-center text-clay-500 font-bold">${stepData.step}</span>
+              <div class="shrink-0"><i data-lucide="${stepData.icon}" class="w-4 h-4 text-clay-500"></i></div>
+              <span class="text-xs sm:text-sm truncate">${stepData.title}</span>
+            `;
+          } else {
+            btn.className = 'w-full text-left p-3 rounded-xl flex items-center space-x-3 transition-all duration-200 hover:bg-brand-50/50 text-brand-500';
+            btn.innerHTML = `
+              <span class="font-mono text-[10px] w-6 text-center text-brand-300">${stepData.step}</span>
+              <div class="shrink-0"><i data-lucide="${stepData.icon}" class="w-4 h-4 text-brand-300"></i></div>
+              <span class="text-xs sm:text-sm truncate">${stepData.title}</span>
+            `;
+          }
+        });
+
+        lucide.createIcons();
+      }
+
+      function selectStep(idx) {
+        activeStep = idx;
+        updateSlide();
+      }
+
+      btnPrev.addEventListener('click', () => {
+        activeStep = (activeStep - 1 + reverseLogisticsSteps.length) % reverseLogisticsSteps.length;
+        updateSlide();
+      });
+
+      btnNext.addEventListener('click', () => {
+        activeStep = (activeStep + 1) % reverseLogisticsSteps.length;
+        updateSlide();
+      });
+
+      initInteractiveUI();
+      lucide.createIcons();
+
+
+
+
+// Menu hambúrguer mobile
+const menuToggle = document.getElementById('menu-toggle');
+const mobileMenu = document.getElementById('mobile-menu');
+const iconOpen = document.getElementById('menu-icon-open');
+const iconClose = document.getElementById('menu-icon-close');
+
+menuToggle.addEventListener('click', () => {
+  const isOpen = !mobileMenu.classList.contains('hidden');
+  mobileMenu.classList.toggle('hidden');
+  mobileMenu.classList.toggle('flex');
+  iconOpen.classList.toggle('hidden');
+  iconClose.classList.toggle('hidden');
+  menuToggle.setAttribute('aria-expanded', String(!isOpen));
+});
+
+document.querySelectorAll('.mobile-nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileMenu.classList.add('hidden');
+    mobileMenu.classList.remove('flex');
+    iconOpen.classList.remove('hidden');
+    iconClose.classList.add('hidden');
+    menuToggle.setAttribute('aria-expanded', 'false');
+  });
+});
+
+// Carrossel de equipamentos (mobile/tablet)
+const equipScroll = document.getElementById('equip-scroll');
+const equipPrev = document.getElementById('equip-prev');
+const equipNext = document.getElementById('equip-next');
+
+function scrollEquip(direction) {
+  const card = equipScroll.querySelector(':scope > div');
+  if (!card) return;
+  const gap = 24;
+  const scrollAmount = card.offsetWidth + gap;
+  equipScroll.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+}
+
+equipPrev.addEventListener('click', () => scrollEquip(-1));
+equipNext.addEventListener('click', () => scrollEquip(1));
+
+    </script>
+  </body>
+</html>
